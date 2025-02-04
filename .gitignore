@@ -1,0 +1,8 @@
+/target
+cloud-provider-config.yaml
+integration-cluster-kubeconfig.yaml
+.bearer-token-info.txt
+/tmp
+*.tfstate
+*.tfstate.*
+*.lock.hcl

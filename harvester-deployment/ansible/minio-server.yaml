@@ -1,0 +1,23 @@
+- hosts: "{{ host_vm_name }}"
+  become: yes
+  vars:
+    minio_server_ip: "{{ minio_server_ip }}"
+    minio_config_disk_size: "{{ minio_config_disk_size }}"
+    minio_config_disk_device: "{{ minio_config_disk_device }}"
+    minio_config_mount_point: "{{ minio_config_mount_point }}"
+    minio_config_mount_point_folder: "{{ minio_config_mount_point_folder }}"
+    minio_config_web_console_port: "{{ minio_config_web_console_port }}"
+    minio_config_api_port: "{{ minio_config_api_port }}"
+    minio_config_https_enabled: "{{ minio_config_https_enabled }}"
+    minio_config_user: "{{ minio_config_user }}"
+    minio_config_password: "{{ minio_config_password }}"
+    minio_config_region: "{{ minio_config_region }}"
+    minio_config_bucket_name: "{{ minio_config_bucket_name }}"
+    minio_config_client_mc_binary_url: "{{ minio_config_client_mc_binary_url }}"
+    minio_binary_url: "{{ minio_binary_url }}"
+    minio_config_certgen_binary_url: "{{ minio_config_certgen_binary_url }}"
+    minio_config_access_key: "{{ minio_config_access_key }}"
+    minio_config_secret_key: "{{ minio_config_secret_key }}"
+  roles:
+    - role: configure-minio-disk
+    - role: minio-base

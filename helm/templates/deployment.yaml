@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+      tier: gopherhole
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+        tier: gopherhole
+    spec: # Pod spec
+      containers:
+      - name: gopherhole
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.containerport }}
+        resources:
+          requests:
+            memory: "16Mi" 
+            cpu: "50m"    # 50 milli cores (1/20 CPU)
+          limits:
+            memory: "128Mi" # 128 mebibytes 
+            cpu: "100m"

@@ -1,0 +1,170 @@
+- name: mention what we are doing here
+  ansible.builtin.shell: >
+    echo "setting up minio"
+  register: mention_what_we_are_doing_here_result
+
+- name: Print return information from the previous task
+  ansible.builtin.debug:
+    var: mention_what_we_are_doing_here_result
+    verbosity: 2
+  ignore_errors: true
+
+- name: Ensure group "minio-user" exists
+  ansible.builtin.group:
+    name: minio-user
+    state: present
+
+- name: Ensure user "minio-user" exists
+  ansible.builtin.user:
+    name: minio-user
+    group: minio-user
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: /home/minio-user
+    system: yes
+    append: yes
+
+- name: Ensure directory "/home/minio-user" exists
+  ansible.builtin.file:
+    path: /home/minio-user
+    state: directory
+    owner: minio-user
+    group: minio-user
+    mode: "0755"
+
+- name: Ensure directory "/home/minio-user/.minio" exists
+  ansible.builtin.file:
+    path: /home/minio-user/.minio
+    state: directory
+    owner: minio-user
+    group: minio-user
+    mode: "0755"
+
+- name: Build directory data on minio storage mount_point
+  ansible.builtin.file:
+    path: "{{ minio_config_mount_point }}/{{ minio_config_mount_point_folder }}"
+    state: directory
+    owner: minio-user
+    group: minio-user
+    mode: "0755"
+
+- name: download certgen binary
+  ansible.builtin.get_url:
+    url: "{{ minio_config_certgen_binary_url }}"
+    dest: /usr/local/bin/certgen
+    mode: +x
+  when: minio_config_https_enabled | bool
+
+- name: build minio tmp directory
+  ansible.builtin.file:
+    path: /tmp/minio
+    state: directory
+    owner: minio-user
+    group: minio-user
+
+- name: build minio cert
+  ansible.builtin.shell: >
+    cd /tmp/minio && /usr/local/bin/certgen -host "{{ minio_server_ip }}"
+  register: build_minio_cert_result
+  when: minio_config_https_enabled | bool
+
+- name: build minio-user .minio certs directory
+  ansible.builtin.file:
+    path: /home/minio-user/.minio/certs
+    state: directory
+    owner: minio-user
+    group: minio-user
+    mode: "0755"
+
+- name: copy public.crt from the tmp/minio directory to the minio-user home directory
+  ansible.builtin.copy:
+    src: /tmp/minio/public.crt
+    dest: /home/minio-user/.minio/certs
+    owner: minio-user
+    group: minio-user
+    mode: "0755"
+    remote_src: true
+  when: minio_config_https_enabled | bool
+
+- name: cat the public.crt file stash in global variable
+  ansible.builtin.shell: |
+    cat /home/minio-user/.minio/certs/public.crt
+  register: additional_ca_to_snag
+  when: minio_config_https_enabled | bool
+
+- name: copy private.key from the tmp/minio directory to the minio=user home directory
+  ansible.builtin.copy:
+    src: /tmp/minio/private.key
+    dest: /home/minio-user/.minio/certs
+    owner: minio-user
+    group: minio-user
+    mode: "0755"
+    remote_src: true
+  when: minio_config_https_enabled | bool
+
+- name: download minio from minio_binary_url
+  ansible.builtin.get_url:
+    url: "{{ minio_binary_url }}"
+    dest: /usr/local/bin/minio
+    mode: +x
+
+- name: copy over the minio service file
+  ansible.builtin.copy:
+    src: minio.service
+    dest: /etc/systemd/system/minio.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: template copy over the etc minio vars file
+  ansible.builtin.template:
+    src: minio.j2
+    dest: /etc/default/minio
+    owner: root
+    group: root
+    force: yes
+
+- name: reload the minio.service systemd service
+  ansible.builtin.systemd:
+    name: minio.service
+    enabled: yes
+    state: reloaded
+    daemon_reload: yes
+
+- name: download the minio admin client binary from minio_cli_client_binary_url
+  ansible.builtin.get_url:
+    url: "{{ minio_config_client_mc_binary_url }}"
+    dest: /usr/local/bin/mc
+    mode: +x
+
+- name: create the minio bucket, the access key
+  ansible.builtin.shell: |
+    /usr/local/bin/mc alias set minio https://{{ minio_server_ip }}:{{ minio_config_api_port }} "{{ minio_config_user }}" "{{ minio_config_password }}" --api S3v4 --insecure
+    /usr/local/bin/mc mb minio/{{ minio_config_bucket_name }} --region "{{ minio_config_region }}" --insecure
+    /usr/local/bin/mc admin user svcacct add --access-key {{ minio_config_access_key }} --secret-key {{ minio_config_secret_key }} minio {{ minio_config_user }} --insecure
+  register: create_minio_bucket_result
+  when: minio_config_https_enabled | bool
+
+- name: create the minio bucket, the access key, http
+  ansible.builtin.shell: |
+    /usr/local/bin/mc alias set minio http://{{ minio_server_ip }}:{{ minio_config_api_port }} "{{ minio_config_user }}" "{{ minio_config_password }}" --api S3v4 --insecure
+    /usr/local/bin/mc mb minio/{{ minio_config_bucket_name }} --region "{{ minio_config_region }}" --insecure
+    /usr/local/bin/mc admin user svcacct add --access-key {{ minio_config_access_key }} --secret-key {{ minio_config_secret_key }} minio {{ minio_config_user }} --insecure
+  register: create_minio_bucket_result
+  when: not minio_config_https_enabled | bool
+
+- name: move over rc.local template
+  ansible.builtin.template:
+    src: rc.local.j2
+    dest: /etc/rc.local
+    mode: a+x
+    owner: root
+    group: root
+
+- name: enable rc-local.service
+  ansible.builtin.systemd:
+    name: rc-local.service
+    enabled: yes
+    state: restarted
+    daemon_reload: yes

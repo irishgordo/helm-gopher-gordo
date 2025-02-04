@@ -1,0 +1,16 @@
+appName: gordogopherhole
+
+lbport: 70
+containerport: 70
+nodeport: 30001
+
+namespace: default
+
+configmap:
+  name: gopher-config
+  data:
+    CUSTOM_HEADER: 'Helm Deployed'
+
+image:
+  name: irishgordo/gophergordo
+  tag: v0.0.6

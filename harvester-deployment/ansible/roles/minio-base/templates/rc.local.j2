@@ -1,0 +1,8 @@
+#!/bin/sh
+# add your commands
+# call your scripts here
+
+/usr/sbin/ip link set enp1s0 up
+/usr/sbin/dhclient -v enp1s0
+# last line must be exit 0
+exit 0

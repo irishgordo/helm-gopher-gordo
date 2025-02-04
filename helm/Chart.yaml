@@ -1,0 +1,12 @@
+apiVersion: v2
+name: gordogopherhole
+description: a helm chart for a rust gopher hole server
+sources:
+  - https://github.com/irishgordo/helm-gopher-gordo
+type: application
+maintainers:
+  - name: Mike Russell
+    email: michael.j.russell.email@gmail.com
+    url: https://github.com/irishgordo
+version: 0.1.0
+appVersion: "1.0.0"

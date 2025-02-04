@@ -1,0 +1,8 @@
+[package]
+name = "helm-gordo-gopher"
+version = "1.0.0"
+authors = ["Michael Russell <michael.j.russell.email@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+gophermap = "0.1.2"

@@ -1,0 +1,19 @@
+MINIO_VOLUMES="{{ minio_config_mount_point }}/{{ minio_config_mount_point_folder }}"
+
+{% if minio_config_https_enabled and minio_config_https_enabled|upper == 'TRUE' %}
+MINIO_OPTS="--certs-dir /home/minio-user/.minio/certs --console-address :{{minio_config_web_console_port }}"
+{% else %}
+MINIO_OPTS="--console-address :{{minio_config_web_console_port }}"
+{% endif %}
+
+MINIO_ROOT_USER={{ minio_config_user }}
+
+MINIO_ROOT_PASSWORD={{ minio_config_password }}
+
+MINIO_SITE_REGION="{{ minio_config_region }}"
+
+{% if minio_config_https_enabled and minio_config_https_enabled|upper == 'TRUE' %}
+MINIO_SERVER_URL="https://{{ minio_server_ip }}:{{ minio_config_api_port }}"
+{% else %}
+MINIO_SERVER_URL="http://{{ minio_server_ip }}:{{ minio_config_api_port }}"
+{% endif %}

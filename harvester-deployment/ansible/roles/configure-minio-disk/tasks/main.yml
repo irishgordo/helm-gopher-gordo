@@ -1,0 +1,50 @@
+- name: mention what we are doing here
+  ansible.builtin.shell: >
+    echo "Configuring disk..."
+  register: mention_what_we_are_doing_here_result
+
+- name: Print return information from the previous task
+  ansible.builtin.debug:
+    var: mention_what_we_are_doing_here_result
+    verbosity: 2
+  ignore_errors: true
+
+- name: build partition table for minio
+  community.general.parted:
+    device: /dev/{{ minio_config_disk_device }}
+    number: 1
+    state: present
+    label: gpt
+    part_type: primary
+    part_start: 0%
+    part_end: 100%
+  register: partition_table_result_minio
+
+- name: debug the partition table for minio
+  ansible.builtin.debug:
+    msg: "{{ partition_table_result_minio }}"
+
+- name: create filesystem for minio
+  community.general.filesystem:
+    fstype: ext4
+    dev: /dev/{{ minio_config_disk_device }}1
+  register: filesystem_result_minio
+
+- name: debug the create filesystem for minio
+  ansible.builtin.debug:
+    msg: "{{ filesystem_result_minio }}"
+  ignore_errors: true
+
+- name: mount minio data point
+  ansible.posix.mount:
+    path: "{{ minio_config_mount_point }}"
+    src: /dev/{{ minio_config_disk_device }}1
+    fstype: ext4
+    opts: defaults
+    state: mounted
+  register: mount_result_minio
+
+- name: debug the mount minio data point
+  ansible.builtin.debug:
+    msg: "{{ mount_result_minio }}"
+  ignore_errors: true

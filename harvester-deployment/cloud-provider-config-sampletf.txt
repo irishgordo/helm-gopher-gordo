@@ -1,0 +1,39 @@
+resource "rancher2_cluster_v2" "sample" {
+    # !NOTE!: VERY IMPORTANT ABOUT MACHINE_SELECTOR_CONFIG WITH HARVESTER
+    # in order to get the value for "cloud-provider-config" you must do the following
+    # 1. on a main node of Harvester (not worker), get `/etc/rancher/rke2/rke2.yaml` (REMEMBER TO REPLACE LOCALHOST/LOOPBACK WITH YOUR HARVESTER VIP IPV4) and stash somewhere
+    # 2. take wherever you've stashed it and point your KUBECONFIG var to it like, `export KUBECONFIG=~/.kube/myharvester.yaml`
+    # 3. grab the "raw" of this: https://github.com/harvester/cloud-provider-harvester/blob/master/deploy/generate_addon.sh
+    # 4. once you've grabbed the raw, make it executable somewhere like `chmod +x generate_addon.sh`
+    # 5. then using the KUBECONFIG execute the script with something like `./generate_addon.sh <the name of the rancher2_cluster_v2.name, whatever you're going to be naming it> <default or another namespace>`
+    # 6. Then inside the `EOF` flags put the entire "cloud config" that is output, don't worry abou the cloud-init stuff
+    # 7. Make sure that the rancher2_cluster_v2.name does MATCH EXACTLY to what is output from the Cloud Config Output dump's `context[0].name` very important
+    # 8. Then if all that is in place you should be good to go, this is a needed effort to get Harvester Cloud Provider working correctly with RKE2 otherwise it's just going to fall flat on it's face and you'll see nothing but taints on the node in RKE2 from Harvester Cloud Provider if this is setup incorrectly
+    machine_selector_config {
+      config = yamlencode({
+        cloud-provider-config = <<EOF
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ''
+    server: https://192.168.104.126:6443
+  name: default
+contexts:
+- context:
+    cluster: default
+    namespace: default
+    user: test-rke2-default-default
+  name: test-rke2-default-default
+current-context: test-rke2-default-default
+kind: Config
+preferences: {}
+users:
+- name: test-rke2-default-default
+  user:
+    token: ''
+EOF
+        cloud-provider-name   = "harvester"
+      })
+    }
+#####################################################3
+}
