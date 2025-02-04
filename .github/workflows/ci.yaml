@@ -59,7 +59,13 @@ jobs:
       with:
         WG_CONFIG_FILE: ${{ secrets.WG_CONFIG_FILE }}
 
+    - name: Add hosts to /etc/hosts
+      if: github.event_name != 'pull_request'
+      run: |
+          sudo echo "${{ secrets.WG_RANCHER_HOST }}" | sudo tee -a /etc/hosts
+
     - name: Kubernetes context
+      if: github.event_name != 'pull_request'
       uses: Azure/k8s-set-context@v1
       with:
         method: kubeconfig
@@ -67,4 +73,5 @@ jobs:
         namespace: default
     
     - name: Deploy
+      if: github.event_name != 'pull_request'
       run: kubectl rollout restart deployment gordogopherhole --namespace=default
