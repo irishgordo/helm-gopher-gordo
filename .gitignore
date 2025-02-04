@@ -7,3 +7,4 @@ integration-cluster-kubeconfig.yaml
 *.tfstate.*
 *.lock.hcl
 *.bkp
+/harvester-deployment/.terraform
