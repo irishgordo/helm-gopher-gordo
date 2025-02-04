@@ -168,7 +168,7 @@ computers:
     additional-notes: 'A04G 2GB - no microssd, no 18650 batteries, can just be powered over USB but the 18650 make it portable, clockwork devterm you can flash the microsd for the OS and whatever'
     quantity: 1
     claim:
-      - user: ''
+      - user: 'justinbarry'
 ",
     );
 }
