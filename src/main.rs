@@ -7,7 +7,7 @@ pub mod services;
 
 const PORT: u16 = 70;
 const HOST: &str = "0.0.0.0";
-const LBHOST: &str = "192.168.104.81";
+const LBHOST: &str = "gopher.gordoughnet.com";
 
 fn handle_client(stream: TcpStream) -> io::Result<()> {
     let mut line = String::new();
