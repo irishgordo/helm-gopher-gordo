@@ -6,3 +6,4 @@ integration-cluster-kubeconfig.yaml
 *.tfstate
 *.tfstate.*
 *.lock.hcl
+*.bkp
