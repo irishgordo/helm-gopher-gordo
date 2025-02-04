@@ -14,10 +14,10 @@ Disclaimer: Views expressed are my own and do not reflect the views of my employ
 pub fn free_gear() -> String {
     return String::from(
         "
-#########################################################
-Free Gear, Just Submit A PR With What You Want
+#####################################################################
+Free Gear, for c2society/DC702 Just Submit A PR With What You Want
 Add your Discord Username or Github Handle to claim
-#########################################################
+####################################################################
 raspberrypi-realm:
   - item: combo-raspberrypi-rack-mount-1U-thing
     descrption: 'RaspberryPi 4 Model Bs, 2 of them, connected to a 1U rack mount w/ both RaspberryPi 4 Model Bs having a HDMI breakout (consume micro hdmi)'
