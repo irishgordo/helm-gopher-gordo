@@ -13,7 +13,7 @@ env:
 
 jobs:
   update:
-    timeout-minutes: 10
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -76,3 +76,7 @@ jobs:
     - name: Deploy
       if: github.event_name != 'pull_request'
       run: kubectl rollout restart deployment gordogopherhole --namespace=default
+  
+    - name: Wait for rollout to finish
+      if: github.event_name != 'pull_request'
+      run: kubectl rollout status deployment gordogopherhole --namespace=default
