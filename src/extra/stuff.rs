@@ -36,7 +36,7 @@ raspberrypi-realm:
     quantity: 1
     additional-notes: 'no microsd cards'
     claim:
-      - user: ''
+      - user: 'jdewald'
   - item: raspberrypi-circa-2011
     description: 'I do not recall the model, but its an older RaspberryPi, composite video out, circa 2011'
     quantity: 1
