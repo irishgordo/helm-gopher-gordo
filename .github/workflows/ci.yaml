@@ -58,3 +58,13 @@ jobs:
       uses: niklaskeerl/easy-wireguard-action@v2
       with:
         WG_CONFIG_FILE: ${{ secrets.WG_CONFIG_FILE }}
+
+    - name: Kubernetes context
+      uses: Azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.RKE2_CLUSTER_BUILT_ON_HARVESTER_W_TERRAFORM_KUBECONFIG }}
+        namespace: default
+    
+    - name: Deploy
+      run: kubectl rollout restart deployment gordogopherhole --namespace=default
