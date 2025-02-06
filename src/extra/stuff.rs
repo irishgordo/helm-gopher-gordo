@@ -152,7 +152,7 @@ phone-things:
     quantity: 1
     additional-notes: ''
     claim:
-      - user: ''
+      - user: 'justinbarry'
 ---
 memory:
   - item: gskill-ripjaw-ddr4-sodimm-2666
