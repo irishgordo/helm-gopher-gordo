@@ -99,6 +99,27 @@ networking-related-realm:
     quantity: 1
     claim:
       - user: ''
+  - item: sipeed-nanokvm-riscv
+    description: 'sipeed nanokvm risc v based meant for doing iLO/iDRAC (lights out) style management of compute'
+    additional-notes: 'disclaimer this can be a security risk, see: www.github.com/sipeed/NanoKVM/issues/301'
+    quantity: 4
+    claim:
+      - user: ''
+        desired-quantity: 0
+      - user: ''
+        desired-quantity: 0
+      - user: ''
+        desired-quantity: 0
+      - user: ''
+        desired-quantity: 0
+---
+pci-or-pcie-related:
+  - item: acasis-4-hdmi-1080p-capture-card-ac4hdmiplus
+    description: 'a 4 channel hdmi video signal input up to 1080p with fan'
+    quantity: 1
+    additional-notes: 'turbine horn fan pcie2.0x4, 20gb/s hdmi capable'
+    claim:
+      - user: ''
 ---
 storage-related:
   - item: wd-1tb-spinning-disk-sata
