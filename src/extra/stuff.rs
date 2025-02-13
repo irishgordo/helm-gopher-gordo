@@ -104,8 +104,8 @@ networking-related-realm:
     additional-notes: 'disclaimer this can be a security risk, see: www.github.com/sipeed/NanoKVM/issues/301'
     quantity: 4
     claim:
-      - user: ''
-        desired-quantity: 0
+      - user: 'kraytonian'
+        desired-quantity: 1
       - user: ''
         desired-quantity: 0
       - user: ''
@@ -167,7 +167,7 @@ phone-things:
     quantity: 1
     additional-notes: ''
     claim:
-      - user: ''
+      - user: 'hippy'
   - item: librem5-phone
     description: 'a librem5 phone from purism'
     quantity: 1
