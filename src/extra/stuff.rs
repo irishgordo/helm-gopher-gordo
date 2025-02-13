@@ -24,7 +24,7 @@ raspberrypi-realm:
     quantity: 1
     additional-notes: 'no microsd cards, no power cable'
     claim:
-      - user: ''
+      - user: 'kraytonian'
   - item: raspberrypi-4-model-b-hdmi-breakout-board
     description: 'RaspberryPi 4 Model B, just a breakout board, to attach to the RaspberryPi 4 Model B, that provide then 2 HDMI ports out from the micro hdmi'
     quantity: 1
